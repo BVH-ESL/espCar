@@ -1,0 +1,150 @@
+<html>
+  <head>
+    <!-- Fonts -->
+    <link href='http://fonts.googleapis.com/css?family=Roboto+Condensed:300,400' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Lato:300,400,700,900' rel='stylesheet' type='text/css'>
+    <!-- CSS Libs -->
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/animate.min.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/bootstrap.min.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/bootstrap-switch.min.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/checkbox3.min.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/dataTables.bootstrap.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/jquery.dataTables.min.css" rel="stylesheet" type="text/css"/>
+    <link href=" flat-admin-bootstrap-templates-master/dist/lib/css/select2.min.css" rel="stylesheet" type="text/css"/>
+    <!-- CSS App -->
+    <!--<link rel="stylesheet" type="text/css" href="  css/style.css">-->
+    <link href=" flat-admin-bootstrap-templates-master/css/style.css" rel="stylesheet" type="text/css"/>
+    <!--<link rel="stylesheet" type="text/css" href="  css/themes/flat-blue.css">-->
+    <link href=" flat-admin-bootstrap-templates-master/css/themes/flat-blue.css" rel="stylesheet" type="text/css"/>
+    <script src=" jquery-1.8.3.min.js" type="text/javascript"></script>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/icon?family=Material+Icons">
+  </head>
+  <!-- <script src="webtcp-master/lib/client/webtcp-0.0.1.min.js"></script> -->
+  <script type="text/javascript">
+  var wsUri = 'ws://192.168.1.222:81';
+  // var websocket;
+  websocket = new WebSocket(wsUri);
+  // websocket.onopen = function(evt) {
+  //   // websocket.send("Message to send");
+  //   console.log("CONNECTED");
+  // };
+
+  document.addEventListener('keydown', function(event) {
+    //right
+    if(event.keyCode == 37) {
+      websocket.send('m(0,0):');
+      websocket.send('m(-50,50):');
+    }
+    //left
+    else if(event.keyCode == 39) {
+      websocket.send('m(0,0):');
+      websocket.send('m(50,-50):');
+    }
+    //up
+    else if(event.keyCode == 38) {
+      websocket.send('m(0,0):');
+      websocket.send('m(50,50):');
+    }
+    //down
+    else if(event.keyCode == 40) {
+      websocket.send('m(0,0):');
+      websocket.send('m(-50,-50):');
+    }
+    //space bar
+    else if(event.keyCode == 32) {
+      websocket.send('m(0,0):');
+    }
+    //enter
+    else if(event.keyCode == 13) {
+      websocket = new WebSocket(wsUri);
+      // websocket.onopen();
+    }
+    //esc
+    else if(event.keyCode == 27) {
+      websocket.send('m(0,0):');
+      websocket.close();
+    }
+
+  });
+  function command(input){
+    if(input === "connect"){
+      if (document.getElementById(input).alt === '0') {
+        websocket.send('m(0,0):');
+        websocket.close();
+        document.getElementById(input).style.filter = 'grayscale(1)';
+        document.getElementById(input).style.webkitFilter = 'grayscale(1)';
+        document.getElementById(input).alt = 1;
+      }else if (document.getElementById(input).alt === '1') {
+        websocket = new WebSocket(wsUri);
+        document.getElementById(input).style.filter = 'grayscale(0)';
+        document.getElementById(input).style.webkitFilter = 'grayscale(0)';
+        document.getElementById(input).alt = 0;
+      }
+    }else if(input === "up"){
+      websocket.send('m(0,0):');
+      websocket.send('m(50,50):');
+    }else if(input === "down"){
+      websocket.send('m(0,0):');
+      websocket.send('m(-50,-50):');
+    }else if(input === "left"){
+      websocket.send('m(0,0):');
+      websocket.send('m(50,-50):');
+    }else if(input === "right"){
+      websocket.send('m(0,0):');
+      websocket.send('m(-50,50):');
+    }else if(input === "stop"){
+      websocket.send('m(0,0):');
+    }
+  }
+  </script>
+  <body style="margin-left:-70px;">
+    <div class="app-container">
+      <div class="row content-container">
+        <div class="container-fluid">
+          <div class="side-body padding-top">
+            <div class="row">
+              <div class="col-xs-2 col-xs-offset-3">
+                <img src="pic/arrow-up.png" class="img-responsive" alt="Responsive image" onclick="command('up')" onmouseup="command('stop')">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2 col-xs-offset-1">
+                <img src="pic/arrow-left.png" class="img-responsive" alt="Responsive image" onclick="command('left')" onmouseup="command('stop')">
+              </div>
+              <div class="col-xs-2 col-xs-offset-2">
+                <img src="pic/arrow-right.png" class="img-responsive" alt="Responsive image" onclick="command('right')" onmouseup="command('stop')">
+              </div>
+              <div class="col-xs-2">
+                <img src="pic/stop.png" class="img-responsive" alt="Responsive image" onclick="command('stop')">
+              </div>
+              <div class="col-xs-2">
+                <img id="connect" src="pic/car.png" class="img-responsive" alt="1" style=" filter: grayscale(1); -webkit-filter: grayscale(1);" onclick="command('connect')">
+              </div>
+            </div>
+            <div class="row">
+              <div class="col-xs-2 col-xs-offset-3">
+                <img src="pic/arrow-down.png" class="img-responsive" alt="Responsive image" onclick="command('down')">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Javascript Libs -->
+    <!-- ๋ฆ App -->
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/bootstrap.min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/bootstrap-switch.min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/Chart.min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/dataTables.bootstrap.min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/jquery.dataTables.min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/jquery.matchHeight-min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/jquery.min.js" type="text/javascript"></script>
+    <script src=" flat-admin-bootstrap-templates-master/dist/lib/js/select2.full.min.js" type="text/javascript"></script>
+    <!-- Javascript -->
+    <!--<script type="text/javascript" src="  js/app.js"></script>-->
+    <script src=" flat-admin-bootstrap-templates-master/js/app.js" type="text/javascript"></script>
+    <!--<script type="text/javascript" src="  js/index.js"></script>-->
+    <script src=" flat-admin-bootstrap-templates-master/js/index.js" type="text/javascript"></script>
+  </body>
+</html>
