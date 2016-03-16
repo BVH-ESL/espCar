@@ -192,8 +192,8 @@ void setup() {
     delay(1000);
   }
 
-//  WiFi.softAP(ssid, password);
-  WiFiMulti.addAP("ESL_Lab1", "wifi@esl");
+  WiFi.softAP(ssid, password);
+  //  WiFiMulti.addAP("ESL_Lab1", "wifi@esl");
   //
   //  while (WiFiMulti.run() != WL_CONNECTED) {
   //    delay(100);
