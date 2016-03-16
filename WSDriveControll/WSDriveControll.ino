@@ -8,9 +8,20 @@
 #include <Arduino.h>
 
 #include <ESP8266WiFi.h>
+#include <WiFiClient.h>
+#include <ESP8266WebServer.h>
 #include <ESP8266WiFiMulti.h>
 #include <WebSocketsServer.h>
 #include <Hash.h>
+extern "C" {
+#include<user_interface.h>
+}
+
+/* Set these to your desired credentials. */
+const char *ssid = "rccar1";
+const char *password = "asdf1234";
+
+ESP8266WebServer server(80);
 
 ESP8266WiFiMulti WiFiMulti;
 
@@ -43,6 +54,8 @@ int speed_b;
 Adafruit_NeoPixel pixels = Adafruit_NeoPixel(1, LED_PIN, NEO_GRB + NEO_KHZ800);
 int state = 0;
 int toggle = 0;
+
+long client_time = millis();
 
 void drive(int speed_a, int speed_b) {
   if (speed_a > 0 && speed_b > 0) {
@@ -124,6 +137,7 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
     case WStype_DISCONNECTED:
       {
         state = 0;
+        drive(0, 0);
         USE_SERIAL.printf("[%u] Disconnected!\n", num);
       }
       break;
@@ -134,11 +148,12 @@ void webSocketEvent(uint8_t num, WStype_t type, uint8_t * payload, size_t lenght
         USE_SERIAL.printf("[%u] Connected from %d.%d.%d.%d url: %s\n", num, ip[0], ip[1], ip[2], ip[3], payload);
 
         // send message to client
-        webSocket.sendTXT(num, "Connected");
+        webSocket.sendTXT(num, "1234");
       }
       break;
     case WStype_TEXT:
-
+      client_time = millis();
+      USE_SERIAL.println(client_time);
       data_in += (char *)payload;
       checkInput(data_in);
       data_in = "";
@@ -177,18 +192,25 @@ void setup() {
     delay(1000);
   }
 
-  WiFiMulti.addAP("ESL_Lab1", "wifi@esl");
-
-  while (WiFiMulti.run() != WL_CONNECTED) {
-    delay(100);
-  }
+  WiFi.softAP(ssid, password);
+  //  WiFiMulti.addAP("ESL_Lab1", "wifi@esl");
+  //
+  //  while (WiFiMulti.run() != WL_CONNECTED) {
+  //    delay(100);
+  //  }
 
   webSocket.begin();
   webSocket.onEvent(webSocketEvent);
 }
 
 void loop() {
+  unsigned char number_client = wifi_softap_get_station_num(); 
+  if (number_client == 0) {
+    USE_SERIAL.println(number_client);
+    drive(0,0);
+  }
   if (state) {
+    Serial.println(WiFi.status());
     pixels.setPixelColor(0, pixels.Color(0, 50, 0));
 
     pixels.show();
@@ -207,5 +229,8 @@ void loop() {
       toggle = 1;
     }
   }
+  //  if(millis()-client_time > 500){
+  //    drive(0,0);
+  //  }
   webSocket.loop();
 }
